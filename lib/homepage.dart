@@ -73,32 +73,61 @@ class Homepage extends StatelessWidget {
               }
               double latitude = snapshot.data.first;
               double longitude = snapshot.data.last;
-              return  GoogleMap(
-                myLocationEnabled: true,
-                initialCameraPosition: CameraPosition(
-                  bearing: 180,
-                  tilt: 30,
-                  zoom: 19.151926040649414,
-                  target: LatLng(latitude,longitude),
-                  ),
-                  onLongPress: (position){
-                    showDialog(context: context, builder: (context){
-                      return AlertDialog(
-                        title:const Text("Add Localarm at Location"),
-                        actions: [
-                          TextButton(onPressed: (){
-                            Navigator.pop(context);
-                            Navigator.push(context, (MaterialPageRoute(builder: (context)=>Newlocalarm(position: position,))));
-                          }, 
-                          child:const Text("Continue")),
-                          TextButton(onPressed: (){
-                            Navigator.pop(context);
-                          }, child:const Text("Cancel"))
-                        ],
-                      );
-                    });
-                  },
-                );
+              List activeLocs = List.empty(growable: true);
+              if (Hive.box("localarms").containsKey("active")) {
+                activeLocs =  Hive.box("localarms").get("active");
+              }
+              return  ListenableBuilder(
+                listenable: Hive.box("localarms").listenable(),
+                builder: (context,child) {
+                  return GoogleMap(
+                    circles: Set.from(List.generate(activeLocs.length, (index){
+                      Map loc = activeLocs[index];
+                      bool isalarm = loc["IsAlarm"];
+                      return Circle(
+                        consumeTapEvents: true,
+                        circleId: CircleId(loc["Id"]),
+                        center: LatLng(loc["Location"].first, loc["Location"].last),
+                        radius: 10,
+                        fillColor: const Color.fromARGB(10, 158, 158, 158),
+                        onTap: (){
+                          showDialog(context: context, builder: (builder){
+                            return AlertDialog(
+                              title: Text(isalarm?"Alarm":"Notification"),
+                              content: Text(loc["Reminder"]),
+                              
+                            );
+                          });
+                        }
+                        );
+                    })),
+                    myLocationEnabled: true,
+                    initialCameraPosition: CameraPosition(
+                      bearing: 180,
+                      tilt: 30,
+                      zoom: 19.151926040649414,
+                      target: LatLng(latitude,longitude),
+                      ),
+                      onLongPress: (position){
+                        showDialog(context: context, builder: (context){
+                          return AlertDialog(
+                            title:const Text("Add Localarm at Location"),
+                            actions: [
+                              TextButton(onPressed: (){
+                                Navigator.pop(context);
+                                Navigator.push(context, (MaterialPageRoute(builder: (context)=>Newlocalarm(position: position,))));
+                              }, 
+                              child:const Text("Continue")),
+                              TextButton(onPressed: (){
+                                Navigator.pop(context);
+                              }, child:const Text("Cancel"))
+                            ],
+                          );
+                        });
+                      },
+                    );
+                }
+              );
             },
           ),
           Padding(
