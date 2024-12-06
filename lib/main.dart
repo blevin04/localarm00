@@ -1,17 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:localarm00/homepage.dart';
 
-void main() {
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox("theme");
+  await Hive.openBox("localarms");
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+      ThemeMode _themeMode = Hive.box("theme").isEmpty
+      ? ThemeMode.light
+      : Hive.box("theme").get("theme") == 1
+          ? ThemeMode.dark
+          : ThemeMode.light;
+
+void changeTheme(ThemeMode themeMode) {
+  // print("ppppppppppppppppppppp");
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      themeMode: _themeMode,
+      darkTheme: ThemeData.dark(),
       theme: ThemeData(
         // This is the theme of your application.
         //
