@@ -70,17 +70,17 @@ Future<ImageProvider>getDp()async{
 
 Future<String> setLocalarm(
   String message,
-  LatLng positionset,
+  List positionset,
   bool isAlarm_,
-
+  bool isPolygon,
 )async{
   String state = "";
   try {
    await Hive.openBox("localarms");
    Box localarmBox = Hive.box("localarms");
-   List position0 = [positionset.latitude,positionset.longitude]; 
+    
    String uid = Uuid().v1();
-   localarmModel newLoc = localarmModel(isAlarm: isAlarm_, location: position0, range: 500, reminder: message,uid: uid);
+   localarmModel newLoc = localarmModel(isAlarm: isAlarm_, location: positionset, range: 500, reminder: message,uid: uid,isPolygon: isPolygon);
    if (localarmBox.containsKey("active")) {
      List active = localarmBox.get("active");
      active.add(newLoc.toJyson());
@@ -89,6 +89,7 @@ Future<String> setLocalarm(
     localarmBox.put("active", [newLoc.toJyson()]);
    }
    state = "Success";
+   print(localarmBox.get("active"));
   } catch (e) {
     state = e.toString();
   }
@@ -97,13 +98,14 @@ Future<String> setLocalarm(
 
 Future<String> deactivate([String alarmId = ""])async{
   String res ;
+  
   try {
     await Hive.openBox("localarms");
   Box localarms0 = Hive.box("localarms");
   if (alarmId.isEmpty) {
   localarms0.clear();
   }else{
-    List<Map> loc = localarms0.get("active");
+    List loc = localarms0.get("active");
    List focus = loc.where((data){return data["Id"] == alarmId;}).toList();
     if (localarms0.containsKey("inactive")) {
       List inactive0 = localarms0.get("inactive");
@@ -114,10 +116,12 @@ Future<String> deactivate([String alarmId = ""])async{
     }
     loc.remove(focus.single);
   }
+
   res = "Success";
   } catch (e) {
     res = e.toString();
   }
+
   return res;
 }
 
@@ -133,9 +137,22 @@ Future<String> activate(String locId)async{
   await locBox0.put("active", activeB);
   await locBox0.put("inactive", inactive0);
   res = "Success";
-
   } catch (e) {
   res = e.toString();  
   }
   return res;
 }
+
+// Future<String>addPolyon(List points)async{
+//   await Hive.openBox("localarms");
+//   Box polyBox = Hive.box("localarms");
+//   if (polyBox.containsKey("polyActive")) {
+//     List activeP = polyBox.get("polyActive");
+//     PolygonLocalarm newP = PolygonLocalarm(
+//       isAlarm: isAlarm, 
+//       location: location, 
+//       range: range, 
+//       reminder: reminder, 
+//       uid: uid)
+//   }
+// }

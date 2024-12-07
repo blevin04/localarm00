@@ -4,7 +4,9 @@ import 'package:localarm00/utils.dart';
 
 class Newlocalarm extends StatelessWidget {
   final LatLng position;
-  const Newlocalarm({super.key,required this.position});
+  final bool isPolygon_;
+  final List points;
+  const Newlocalarm({super.key,this.position =const LatLng(0, 0),this.isPolygon_=false,this.points = const [] });
 static TextEditingController controller =  TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -73,7 +75,16 @@ static TextEditingController controller =  TextEditingController();
               child: InkWell(
                 onTap: ()async{
                   if (controller.text.isNotEmpty) {
-                    String state = await setLocalarm(controller.text, position, isAlarm);
+                    List pointsSet;
+                    
+                    if (isPolygon_) {
+                      pointsSet = List.generate(points.length, (index){
+                        return [points[index].latitude,points[index].longitude];
+                      });
+                    }else{
+                      pointsSet = [position.latitude,position.longitude];
+                    }
+                    String state = await setLocalarm(controller.text, pointsSet, isAlarm,isPolygon_);
                     if (state == "Success") {
                       Navigator.pop(context);
                     }

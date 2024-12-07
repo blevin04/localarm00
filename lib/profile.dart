@@ -24,11 +24,12 @@ class _ProfileState extends State<Profile> {
                 initialData:const AssetImage("lib/assets/user_default.png"),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   return CircleAvatar(
+                    radius: 40,
                     backgroundImage: snapshot.data,
                   );
                 },
               ),
-              title:const Text("Profile"),
+              title:const Text("Profile",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
             ),
            const Padding(
               padding:  EdgeInsets.all(8.0),
@@ -44,7 +45,7 @@ class _ProfileState extends State<Profile> {
                 List active = List.empty(growable: true);
                 if (localarms.containsKey("active")) {
                   active.addAll(localarms.get("active"));
-                  // print(active);
+                   print(active);
                 }
                 if (active.isEmpty) {
                   return const Center(child: Text("No active localarms at the moment"),);
