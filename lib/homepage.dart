@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -25,14 +26,22 @@ ValueNotifier<List<LatLng>> polygons = ValueNotifier([]);
 ValueNotifier<bool> newPoint = ValueNotifier(false);
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
-  static final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
+  // static final Completer<GoogleMapController> _controller =
+  //     Completer<GoogleMapController>();
 
   @override
   State<Homepage> createState() => _HomepageState();
 }
-
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
 class _HomepageState extends State<Homepage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
+
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(

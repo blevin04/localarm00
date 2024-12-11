@@ -1,16 +1,15 @@
-
-
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:localarm00/homepage.dart';
 import 'package:localarm00/models.dart';
 import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
 
 showsnackbar(BuildContext context, String content) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(content)));
-}
+}  
 
 void showcircularProgressIndicator(BuildContext context)async{
   return await showDialog(context: context,
@@ -75,6 +74,12 @@ Future<String> setLocalarm(
   bool isPolygon,
 )async{
   String state = "";
+  // await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+  //   AndroidFlutterLocalNotificationsPlugin>()!.requestNotificationsPermission();
+  //  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+  //   AndroidFlutterLocalNotificationsPlugin>()!.requestExactAlarmsPermission();
+  //  await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+  //   AndroidFlutterLocalNotificationsPlugin>()!.requestFullScreenIntentPermission();
   try {
    await Hive.openBox("localarms");
    Box localarmBox = Hive.box("localarms");
