@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:localarm00/homepage.dart';
 import 'package:localarm00/models.dart';
 import 'package:location/location.dart';
 import 'package:uuid/uuid.dart';
@@ -26,18 +24,17 @@ Future<List> getPosition()async{
   List position = List.empty(growable: true);
   Location location = new Location();
 
-bool _serviceEnabled;
+// bool _serviceEnabled;
 PermissionStatus _permissionGranted;
 LocationData _locationData;
 
-_serviceEnabled = await location.serviceEnabled();
-if (!_serviceEnabled) {
-  _serviceEnabled = await location.requestService();
-  if (!_serviceEnabled) {
-    return [];
-  }
-}
-
+// _serviceEnabled = await location.serviceEnabled();
+// if (!_serviceEnabled) {
+//   _serviceEnabled = await location.requestService();
+//   if (!_serviceEnabled) {
+//     return [];
+//   }
+// }
 _permissionGranted = await location.hasPermission();
 if (_permissionGranted == PermissionStatus.denied) {
   _permissionGranted = await location.requestPermission();
@@ -45,7 +42,6 @@ if (_permissionGranted == PermissionStatus.denied) {
     return [];
   }
 }
-
 _locationData = await location.getLocation();
 position.add(_locationData.latitude);
 position.add(_locationData.longitude);
